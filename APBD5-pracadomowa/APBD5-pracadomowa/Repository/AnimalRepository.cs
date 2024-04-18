@@ -14,15 +14,8 @@ public class AnimalRepository : IAnimalRepository
 
         using SqlCommand command = new SqlCommand();
         command.Connection = connection;
-        if (orderBy == null)
-        {
-            command.CommandText = "SELECT * FROM Animals ORDER BY Name;";
-        }
-        else
-        {
-            command.CommandText = "SELECT * FROM Animals ORDER BY @orderBy;";
-            command.Parameters.AddWithValue("orderBy", orderBy);
-        }
+        
+        command.CommandText = "SELECT * FROM Animals;";
 
         var reader = command.ExecuteReader();
 
@@ -44,6 +37,20 @@ public class AnimalRepository : IAnimalRepository
                 Category = reader.GetString(categoryOrdinal),
                 Area = reader.GetString(areaOrdinal)
             });
+        }
+
+        if (orderBy == null || orderBy == "Name")
+        {
+            animals.OrderBy(animal => animal.Name);
+        }else if (orderBy == "Description")
+        {
+            animals.OrderBy(animal => animal.Description);
+        }else if (orderBy == "Area")
+        {
+            animals.OrderBy(animal => animal.Area);
+        }else if (orderBy == "Category")
+        {
+            animals.OrderBy(animal => animal.Category);
         }
 
         return animals;
